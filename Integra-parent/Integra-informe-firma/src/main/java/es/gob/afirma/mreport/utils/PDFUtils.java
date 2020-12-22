@@ -28,14 +28,17 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.krysalis.barcode4j.tools.UnitConv;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import es.gob.afirma.mreport.exceptions.SignatureReportException;
 import es.gob.afirma.mreport.exceptions.UtilsException;
@@ -134,8 +137,8 @@ public final class PDFUtils {
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream();) {
 			PdfReader readerPdf1 = new PdfReader(pdf1);
 			PdfReader readerPdf2 = new PdfReader(pdf2);
-			com.lowagie.text.Rectangle psize = readerPdf1.getPageSize(1);
-			Document document = new Document(new com.lowagie.text.Rectangle(psize.getWidth(), psize.getHeight()));
+			Rectangle psize = readerPdf1.getPageSize(1);
+			Document document = new Document(new Rectangle(psize.getWidth(), psize.getHeight()));
 			
 			PdfCopy copy = new PdfCopy(document, out);
 			document.open();
@@ -278,7 +281,7 @@ public final class PDFUtils {
 			PdfContentByte directContent = writer.getDirectContent();
 			PdfContentByte under = writer.getDirectContentUnder();
 			for (int i = 1; i <= readerTarget.getNumberOfPages(); i++) {
-				com.lowagie.text.Rectangle rectangle = readerTarget.getPageSize(i);
+				Rectangle rectangle = readerTarget.getPageSize(i);
 				document.setPageSize(rectangle);
 				document.newPage();
 				PdfImportedPage pageTarget = writer.getImportedPage(readerTarget, i);
@@ -414,7 +417,7 @@ public final class PDFUtils {
     		int numPages = reader.getNumberOfPages();
     		
     		for (int i = 1; i <= numPages; i++) {
-    			com.lowagie.text.Rectangle page = reader.getPageSize(i);
+    			Rectangle page = reader.getPageSize(i);
     			if (page.getWidth() > page.getHeight()) {
     				pages.add("H");
     			} else {
@@ -439,7 +442,7 @@ public final class PDFUtils {
 	 * @throws UtilsException	If an error occurs.
 	 */
 	public static byte[ ] concatPDFs(List<byte[ ]> files) throws UtilsException {
-		Document pdfDoc = new Document(com.lowagie.text.PageSize.A4);
+		Document pdfDoc = new Document(PageSize.A4);
 		
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream();) {
 			PdfCopy copy = new PdfCopy(pdfDoc, out);
@@ -468,12 +471,12 @@ public final class PDFUtils {
 	 * @throws UtilsException If an error occurs.
 	 */
 	public static byte[ ] imageToPDF(byte[ ] image) throws UtilsException {
-		Document pdfDoc = new Document(com.lowagie.text.PageSize.A4);
+		Document pdfDoc = new Document(PageSize.A4);
 		
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream();) {
 			PdfWriter.getInstance(pdfDoc, out);
 			pdfDoc.open();
-			com.lowagie.text.Image img = com.lowagie.text.Image.getInstance(image);
+			Image img = Image.getInstance(image);
 			pdfDoc.add(img);
 			pdfDoc.close();
 			return out.toByteArray();
